@@ -1,0 +1,281 @@
+openapi: 3.0.0
+info:
+  title: Andro
+  description: API for users and their associated account attributes. Initial implementation is simple CRUD api. More operation may be added later.
+  version: 1.0.0-prealpha
+servers:
+  - url: 'https'
+paths:
+  "/andro":
+    post:
+      description: Generates a new userID and associates with user provided attributes then stores it to the user DB
+      responses:
+        '201': # resource created
+          description: JSON array of new user object with ID and identifying information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResourceResponse'
+        '500':
+          description: The server has an encountered an issue while creating the user that it cannot handle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+              examples:
+                UnknownError:
+                  value:
+                    status: 500.1
+                    message: An unknown error was encountered while trying to create resource.
+        '502':
+          description: The server failed to get a response from another entity while handling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ServerError'
+              examples:
+                DBerror:
+                  value:
+                    status: 502.1
+                    message: Could not communicate with user database.
+        '503':
+          description: The server is not ready to handle the request, likely because it is down for maintenance
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ServerError'
+              examples:
+                MaintenanceError:
+                  value:
+                    status: 503.1
+                    message: Server is currently offline for maintenance. Please check again later.
+  "/andro/{userID}":
+    get:
+      description: Retrieve the information and resource attributes associated with an existing user
+      parameters:
+        - $ref: '#/components/parameters/UserIDParam'
+      responses:
+        '200': # resource read
+          description: JSON array of user object with ID and identifying information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResourceResponse'
+        '404':
+          description: Error thrown if userID could not be found or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                UserNotFound:
+                  value:
+                    status: 404.2
+                    message: The userID could not be found or does not exist.
+        '500':
+          description: The server has an encountered an issue while reading the user data that it could not handle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+              examples:
+                UnknownError:
+                  value:
+                    status: 500.2
+                    message: An unknown error was encountered while trying to read resource.
+        '502':
+          description: The server failed to get a response from another entity while handling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ServerError'
+              examples:
+                DBerror:
+                  value:
+                    status: 502.2
+                    message: Could not communicate with user database.
+        '503':
+          description: The server is not ready to handle the request, likely because it is down for maintenance
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ServerError'
+              examples:
+                MaintenanceError:
+                  value:
+                    status: 503.2
+                    message: Server is currently offline for maintenance. Please check again later.
+    put:
+      description: Update information or atttributes associated with an existing user
+      parameters:
+        - $ref: '#/components/parameters/UserIDParam'
+      responses:
+        '200': # resource updated
+          description: JSON array of updated user object with ID and identifying information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResourceResponse'
+        '404':
+          description: Error thrown if userID could not be found or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                UserNotFound:
+                  value:
+                    status: 404.3
+                    message: The userID could not be found or does not exist.
+        '500':
+          description: The server has an encountered an issue while updating the user data that it could not handle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+              examples:
+                UnknownError:
+                  value:
+                    status: 500.3
+                    message: An unknown error was encountered while trying to update resource.
+        '502':
+          description: The server failed to get a response from another entity while handling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ServerError'
+              examples:
+                DBerror:
+                  value:
+                    status: 502.3
+                    message: Could not communicate with user database.
+        '503':
+          description: The server is not ready to handle the request, likely because it is down for maintenance
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ServerError'
+              examples:
+                MaintenanceError:
+                  value:
+                    status: 503.3
+                    message: Server is currently offline for maintenance. Please check again later.
+    delete:
+      description: delete the resource associated with an existing user, rendering them nonexistent
+      parameters:
+        - $ref: '#/components/parameters/UserIDParam'
+      responses:
+        '204': # resource deleted
+          description: JSON array of user object with ID and identifying information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResourceResponse'
+        '404':
+          description: Error thrown if userID could not be found or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+              examples:
+                UserNotFound:
+                  value:
+                    status: 404.4
+                    message: The userID could not be found or does not exist.
+        '500':
+          description: The server has an encountered an issue while deleting the user data that it could not handle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+              examples:
+                UnknownError:
+                  value:
+                    status: 500.4
+                    message: An unknown error was encountered while trying to read resource.
+        '502':
+          description: The server failed to get a response from another entity while handling the request
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ServerError'
+              examples:
+                DBerror:
+                  value:
+                    status: 502.4
+                    message: Could not communicate with user database.
+        '503':
+          description: The server is not ready to handle the request, likely because it is down for maintenance
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/ServerError'
+              examples:
+                MaintenanceError:
+                  value:
+                    status: 503.4
+                    message: Server is currently offline for maintenance. Please check again later.
+
+components:
+  schemas:
+    UserResourceResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+        data:
+          $ref: '#/components/schemas/UserObject'
+    DeleteResourceResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+    UserObject:
+      type: object
+      properties:
+        userID:
+          type: integer
+          example: 12345
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: johndoe@email.com
+        password:
+          type: string
+          example: 123abcgh! # this must be encrypted in transit
+    BadRequest:
+      type: object
+      properties:
+        status:
+          type: number
+        message:
+          type: string
+    NotFound:
+      type: object
+      properties:
+        status:
+          type: number
+        message:
+          type: string
+    ServerError:
+      type: object
+      properties:
+        status:
+          type: number
+        message:
+          type: string
+  parameters:
+    UserIDParam:
+      in: path
+      name: userID
+      required: true
+      schema:
+        type: string
+
+
+  

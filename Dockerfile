@@ -3,7 +3,10 @@ FROM openjdk:14-jdk-alpine
 #Metadata
 LABEL author="Thomas Driscoll"
 #Environment variables
-ENV PORT=8019
+ENV PORT=8019 \
+    CONFIG_USER_NAME="developer" \
+    CONFIG_PASSWORD="osai@illinois" \
+    CONFIG_SERVER_URL="https://dev.config-server.thomas-driscoll.com/"
 #Copies all source code in same folder - . - to docker virtual fs folder, /app
 COPY . /app
 #Working director where instructions will run
