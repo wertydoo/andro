@@ -40,6 +40,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResourceResponse'
+        '400': # bad request in submission
+          description: JSON array with status code and offending submission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                BadSubmission:
+                  value:
+                    status: 400.2
+                    message: The userId format is incorrect!
         '404':
           description: Error thrown if userId could not be found or does not exist
           content:
@@ -63,6 +74,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserResourceResponse'
+        '400': # bad request in submission
+          description: JSON array with status code and offending submission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                BadSubmission:
+                  value:
+                    status: 400.3
+                    message: the userId format is incorrect!
         '404':
           description: Error thrown if userId could not be found or does not exist
           content:
@@ -86,6 +108,17 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeleteResourceResponse'
+        '400': # bad request in submission
+          description: JSON array with status code and offending submission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+              examples:
+                BadSubmission:
+                  value:
+                    status: 400.4
+                    message: the userId format is incorrect!
         '404':
           description: Error thrown if userId could not be found or does not exist
           content:
