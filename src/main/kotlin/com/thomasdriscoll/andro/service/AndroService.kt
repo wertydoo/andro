@@ -3,6 +3,7 @@ package com.thomasdriscoll.andro.service
 import com.thomasdriscoll.andro.lib.dao.AndroRepo
 import com.thomasdriscoll.andro.lib.exceptions.DriscollException
 import com.thomasdriscoll.andro.lib.exceptions.ExceptionResponses
+import com.thomasdriscoll.andro.lib.models.User
 import org.springframework.stereotype.Service
 
 @Service
@@ -14,5 +15,16 @@ class AndroService(val androRepo: AndroRepo) {
             throw DriscollException(ExceptionResponses.TESTING_EXCEPTIONS.status,ExceptionResponses.TESTING_EXCEPTIONS.message)
         }
         return "My name is $name"
+    }
+
+    @Throws(DriscollException::class)
+    fun save(user : User) : User{
+        //save to db
+        return user
+    }
+
+    fun generateId() : Int {
+        //generate id
+        return 1234
     }
 }
