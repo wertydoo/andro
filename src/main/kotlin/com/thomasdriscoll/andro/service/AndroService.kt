@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class AndroService(val androRepo: AndroRepo) {
-
     @Throws(DriscollException::class)
     fun dummyFunction(name: String) : String {
         if(name == "Thummus"){
@@ -18,13 +17,7 @@ class AndroService(val androRepo: AndroRepo) {
     }
 
     @Throws(DriscollException::class)
-    fun save(user : User) : User{
-        //save to db
-        return user
-    }
-
-    fun generateId() : Int {
-        //generate id
-        return 1234
+    fun createUser(user: User): User {
+        return androRepo.save(user)
     }
 }

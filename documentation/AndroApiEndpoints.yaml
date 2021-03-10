@@ -149,7 +149,7 @@ components:
       type: object
       properties:
         userId:
-          type: integer
+          type: number
           example: 12345
         firstName:
           type: string

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 
+
 @RestController
 class AndroController(
         private val androService : AndroService
@@ -21,9 +22,8 @@ class AndroController(
 
     @PostMapping("/andro")
     fun createUser(@RequestBody newUser: User) : ResponseEntity<DriscollResponse<User>> {
-        newUser.userId = androService.generateId()
-        val savedUser = androService.save(newUser)
-        return ResponseEntity.ok().body(DriscollResponse(HttpStatus.CREATED.value(), savedUser))
+        //TODO("Check for user existing email")
+        return ResponseEntity.ok().body(DriscollResponse(HttpStatus.CREATED.value(), androService.createUser(newUser)))
     }
 
 }
