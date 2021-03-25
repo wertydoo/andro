@@ -6,7 +6,7 @@ import com.thomasdriscoll.andro.lib.responses.DriscollResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
+import java.net.URI
 
 
 @RestController
@@ -23,7 +23,25 @@ class AndroController(
     @PostMapping("/andro")
     fun createUser(@RequestBody newUser: User) : ResponseEntity<DriscollResponse<User>> {
         //TODO("Check for user existing email")
-        return ResponseEntity.ok().body(DriscollResponse(HttpStatus.CREATED.value(), androService.createUser(newUser)))
+        val createdUser = androService.createUser(newUser)
+        return ResponseEntity.created(URI("/andro/${createdUser.userId}")).body(DriscollResponse(HttpStatus.CREATED.value(), createdUser))
     }
+
+    @GetMapping("/andro/{userId}")
+    fun getUser(@PathVariable userId: Long, @RequestParam category: String) : ResponseEntity<DriscollResponse<User>> {
+        return ResponseEntity.ok().body(DriscollResponse(HttpStatus.OK.value(),androService.getUser(userId, category)))
+    }
+
+    @PutMapping("/andro/{userId}")
+    fun getUser(@RequestBody userUpdate: User, @PathVariable userId: Long) : ResponseEntity<DriscollResponse<User>> {
+        return ResponseEntity.ok().body(DriscollResponse(HttpStatus.OK.value(),androService.updateUser(userId,userUpdate)))
+    }
+
+    @DeleteMapping("/andro/{userId}")
+    fun deleteUser(@PathVariable userId: Long) : ResponseEntity.HeadersBuilder<*> {
+        androService.deleteUser(userId)
+        return ResponseEntity.noContent().header("Success", "Success")
+    }
+
 
 }

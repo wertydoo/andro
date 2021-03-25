@@ -5,5 +5,6 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface AndroRepo : CrudRepository<User,Int>{
+interface AndroRepo : CrudRepository<User,Long>{
+    fun existsByEmail(email: String) : Boolean
 }

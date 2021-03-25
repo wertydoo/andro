@@ -38,6 +38,7 @@ subprojects{
         }
         implementation("org.hibernate.validator:hibernate-validator")
         implementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
+        implementation("com.fasterxml.jackson.core:jackson-core:2.10.0")
     }
 }
 dependencies {
@@ -57,6 +58,7 @@ dependencies {
     implementation("org.hibernate.validator:hibernate-validator")
     implementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
     implementation("org.springdoc:springdoc-openapi-ui:1.4.8")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.10.0")
     implementation(project(":api"))
 }
 
