@@ -36,53 +36,6 @@ internal class AndroControllerTest {
     }
 
     @Nested
-    @DisplayName("Dummy Function Controller Tests")
-    inner class DummyFunctionControllerTests{
-        private val name : String = "Brian"
-        private val badName : String = "Thummus"
-        private val nameResponse : String = "My name is Brian"
-
-        @Test
-        fun givenName_whenGetName_thenReturnResponseEntity(){
-            // Declare expected response and other variables used only in this test
-            // Note: ObjectMapper here is mapping Java objects to JSON objects for you
-            val expected:String  = ObjectMapper().writeValueAsString(DriscollResponse(HttpStatus.OK.value(),nameResponse))
-
-            //Mock what needs to be mocked
-            whenever(androService.dummyFunction(name)).thenReturn(nameResponse)
-
-            val result: MvcResult = mockMvc.perform(get("/$name")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk)
-                .andReturn()
-
-            //Assert if test worked
-            val actual:String = result.response.contentAsString
-            assertEquals(expected,actual)
-        }
-
-        @Test
-        fun givenInvalidName_whenGetName_thenReturnException(){
-            //variables local to test
-            val exception = DriscollException(ExceptionResponses.TESTING_EXCEPTIONS.status,
-                                                                 ExceptionResponses.TESTING_EXCEPTIONS.message)
-            val expected: String = ObjectMapper().writeValueAsString(DriscollResponse(exception.status.value(), exception.message))
-
-            //Mock what needs to be mocked
-            whenever(androService.dummyFunction(badName)).thenThrow(exception)
-            //Do test
-            val result: MvcResult = mockMvc.perform(get("/$badName")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest)
-                .andReturn()
-
-            //Assert if test worked
-            val actual: String = result.response.contentAsString
-            assertEquals(expected, actual)
-        }
-    }
-
-    @Nested
     @DisplayName("Post /Andro Endpoint Tests")
     inner class PostAndroEndpointTests{
         //They have the same email...

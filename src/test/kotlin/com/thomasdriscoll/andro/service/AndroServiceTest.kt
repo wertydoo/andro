@@ -26,30 +26,6 @@ internal class AndroServiceTest {
     }
 
     @Nested
-    @DisplayName("Dummy function service tests")
-    inner class DummyFunctionServiceTests() {
-        private val name: String = "Thomas"
-        private val badName: String = "Thummus"
-        private val nameResponse: String = "My name is Thomas"
-
-        @Test
-        fun whenValidName_returnNameWithMessage() {
-            val actual: String = androService.dummyFunction(name)
-            assertEquals(nameResponse, actual)
-        }
-
-        @Test
-        fun whenInvalidName_throwException() {
-            val excepted: DriscollException = DriscollException(ExceptionResponses.TESTING_EXCEPTIONS.status,
-                    ExceptionResponses.TESTING_EXCEPTIONS.message)
-
-            val actual: DriscollException = Assertions.assertThrows(DriscollException::class.java) { androService.dummyFunction(badName) }
-            assertEquals(excepted.status, actual.status)
-            assertEquals(excepted.message, actual.message)
-        }
-    }
-
-    @Nested
     @DisplayName("Create User service Tests")
     inner class CreateUserServiceTests() {
         private val testUserGood = User(0,
@@ -116,7 +92,7 @@ internal class AndroServiceTest {
 
             //Perform test
             val actualResponse = ObjectMapper().writeValueAsString(
-                    androService.getUser(userIdGood,""))
+                    androService.getUser(userIdGood))
             assertEquals(expectedResponse,actualResponse)
         }
 
@@ -138,7 +114,7 @@ internal class AndroServiceTest {
 //
 //            //Perform test
 //            val actualResponse = Assertions.assertThrows(
-//                    DriscollException::class.java) { androService.getUser(userIdBad, "") }
+//                    DriscollException::class.java) { androService.getUser(userIdBad) }
 //
 //            //Assert successful test
 //            assertEquals(expectedResponse.status, actualResponse.status)

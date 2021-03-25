@@ -11,25 +11,17 @@ import java.net.URI
 
 @RestController
 class AndroController(
-        private val androService : AndroService
-) {
-    @GetMapping("/{name}")
-    fun sanityCheck(
-            @PathVariable name: String
-    ) : ResponseEntity<DriscollResponse<String>>{
-        return ResponseEntity.ok().body(DriscollResponse(HttpStatus.OK.value(), androService.dummyFunction(name)))
-    }
+        private val androService : AndroService) {
 
     @PostMapping("/andro")
     fun createUser(@RequestBody newUser: User) : ResponseEntity<DriscollResponse<User>> {
-        //TODO("Check for user existing email")
         val createdUser = androService.createUser(newUser)
         return ResponseEntity.created(URI("/andro/${createdUser.userId}")).body(DriscollResponse(HttpStatus.CREATED.value(), createdUser))
     }
 
     @GetMapping("/andro/{userId}")
-    fun getUser(@PathVariable userId: Long, @RequestParam category: String) : ResponseEntity<DriscollResponse<User>> {
-        return ResponseEntity.ok().body(DriscollResponse(HttpStatus.OK.value(),androService.getUser(userId, category)))
+    fun getUser(@PathVariable userId: Long) : ResponseEntity<DriscollResponse<User>> {
+        return ResponseEntity.ok().body(DriscollResponse(HttpStatus.OK.value(),androService.getUser(userId)))
     }
 
     @PutMapping("/andro/{userId}")
@@ -38,9 +30,8 @@ class AndroController(
     }
 
     @DeleteMapping("/andro/{userId}")
-    fun deleteUser(@PathVariable userId: Long) : ResponseEntity.HeadersBuilder<*> {
-        androService.deleteUser(userId)
-        return ResponseEntity.noContent().header("Success", "Success")
+    fun deleteUser(@PathVariable userId: Long) : ResponseEntity<DriscollResponse<String>> {
+        return ResponseEntity.ok().body(DriscollResponse(HttpStatus.NO_CONTENT.value(),androService.deleteUser(userId)))
     }
 
 
