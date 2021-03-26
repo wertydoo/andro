@@ -1,8 +1,7 @@
 package com.thomasdriscoll.andro.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import com.thomasdriscoll.andro.lib.dao.AndroRepo
 import com.thomasdriscoll.andro.lib.exceptions.DriscollException
 import com.thomasdriscoll.andro.lib.exceptions.ExceptionResponses
@@ -87,8 +86,9 @@ internal class AndroServiceTest {
             val expectedResponse : String = ObjectMapper().writeValueAsString(testUser)
 
             //Mock the usage of our repo to separate it from this test
-            //
-            whenever(androRepo.findByIdOrNull(userIdGood)).thenReturn(testUser);
+            //In this case the repo checks for an existing id in our database
+            // and returns the user of the specified id
+            whenever(androRepo.findById(userIdGood)).thenReturn(Optional.of(testUser));
 
             //Perform test
             val actualResponse = ObjectMapper().writeValueAsString(
@@ -97,29 +97,121 @@ internal class AndroServiceTest {
         }
 
         @Test
-        fun givenUserId_whenUserExists_andKeywordSupplied_thenReturnUserAttribute(){
-            //TODO
+        fun givenUserId_whenUserNotExists_thenThrowException(){
+            //Declaring expected response and necessary variables used uniquely for this test
+            val expectedResponse = DriscollException(
+                    ExceptionResponses.USER_NOT_FOUND.status,
+                    ExceptionResponses.USER_NOT_FOUND.message)
+            //Mock the usage of our repo to separate it from this test
+            //In this case the repo checks for an existing id in our database
+            // and returns null because the user does not exist
+            whenever(androRepo.findById(userIdBad)).thenReturn(Optional.empty())
+
+            //Perform test
+            val actualResponse = Assertions.assertThrows(
+                    DriscollException::class.java) { androService.getUser(userIdBad) }
+
+            //Assert successful test
+            assertEquals(expectedResponse.status, actualResponse.status)
+            assertEquals(expectedResponse.message, actualResponse.message)
+        }
+    }
+    @Nested
+    @DisplayName("Update User Service Tests")
+    inner class UpdateUserServiceTests(){
+        private val testUser = User(1,
+                "creating", "userGood", "userGood@email.com")
+        private val userUpdate = User(1,
+                "updated", "userUpdated","updatedUser@email.com")
+        private val userIdGood : Long = 1;
+        private val userIdBad : Long = 2;
+
+        @Test
+        fun givenUserId_whenUserToUpdateExists_thenUpdateAndReturnUser(){
+            //Declaring expected response and necessary variables used uniquely for this test
+            val expectedResponse : String = ObjectMapper().writeValueAsString(userUpdate)
+
+            //Mock the usage of our repo to separate it from this test
+            //In this case the repo checks for an existing id in our database
+            // and returns the user of the specified id
+            whenever(androRepo.findById(userIdGood)).thenReturn(Optional.of(testUser));
+            //In this case the repo saves the updated user to the database and returns
+            // the saved user. If our update operation works correctly then userUpdate should match
+            // the save operation in the actual service
+            whenever(androRepo.save(userUpdate)).thenReturn(userUpdate)
+
+            //Perform test
+            val actualResponse = ObjectMapper().writeValueAsString(
+                    androService.updateUser(userIdGood, userUpdate))
+            assertEquals(expectedResponse,actualResponse)
         }
 
-//        @Test
-//        fun givenUserId_whenUserNotExists_thenThrowException(){
-//            //Declaring expected response and necessary variables used uniquely for this test
-//            val expectedResponse = DriscollException(
-//                    ExceptionResponses.USER_NOT_FOUND.status,
-//                    ExceptionResponses.USER_NOT_FOUND.message)
-//            //Mock the usage of our repo to separate it from this test
-//            //In this case the repo checks for an existing id in our database
-//            // and returns null because the user does not exist
-//            whenever(androRepo.findByIdOrNull(userIdBad)).thenReturn(null)
-//
-//            //Perform test
-//            val actualResponse = Assertions.assertThrows(
-//                    DriscollException::class.java) { androService.getUser(userIdBad) }
-//
-//            //Assert successful test
-//            assertEquals(expectedResponse.status, actualResponse.status)
-//            assertEquals(expectedResponse.message, actualResponse.message)
-//        }
+        @Test
+        fun givenUserId_whenUserToUpdateNotExists_thenThrowException(){
+            //Declaring expected response and necessary variables used uniquely for this test
+            val expectedResponse = DriscollException(
+                    ExceptionResponses.USER_NOT_FOUND.status,
+                    ExceptionResponses.USER_NOT_FOUND.message)
+            //Mock the usage of our repo to separate it from this test
+            //In this case the repo checks for an existing id in our database
+            // and returns null because the user does not exist
+            whenever(androRepo.findById(userIdBad)).thenReturn(Optional.empty())
+
+            //Perform test
+            val actualResponse = Assertions.assertThrows(
+                    DriscollException::class.java) { androService.updateUser(userIdBad,userUpdate) }
+
+            //Assert successful test
+            assertEquals(expectedResponse.status, actualResponse.status)
+            assertEquals(expectedResponse.message, actualResponse.message)
+        }
+    }
+
+    @Nested
+    @DisplayName("Delete User Service Tests")
+    inner class DeleteUserServiceTests() {
+        private val testUser = User(1,
+                "creating", "userGood", "userGood@email.com")
+        private val userIdGood: Long = 1;
+        private val userIdBad: Long = 2;
+
+        @Test
+        fun givenUserId_whenUserToDeleteExists_thenDeleteAndReturnSuccess() {
+            //Declaring expected response and necessary variables used uniquely for this test
+            val expectedResponse: String = "User successfully deleted!"
+
+            //Mock the usage of our repo to separate it from this test
+            //In this case the repo checks for an existing id in our database
+            // and returns true
+            whenever(androRepo.existsById(userIdGood)).thenReturn(true);
+
+            //Perform test
+            val actualResponse = androService.deleteUser(userIdGood)
+            //As it turns out, deleteById is a void method so we simply have to verify
+            // that it was called
+            verify(androRepo).deleteById(userIdGood)
+            assertEquals(expectedResponse, actualResponse)
+        }
+
+        @Test
+        fun givenUserId_whenUserToUpdateNotExists_thenThrowException() {
+            //Declaring expected response and necessary variables used uniquely for this test
+            val expectedResponse = DriscollException(
+                    ExceptionResponses.USER_NOT_FOUND.status,
+                    ExceptionResponses.USER_NOT_FOUND.message)
+            //Mock the usage of our repo to separate it from this test
+            //In this case the repo checks for an existing id in our database
+            // and returns false because the user does not exist
+            whenever(androRepo.existsById(userIdBad)).thenReturn(false)
+
+            //Perform test
+            val actualResponse = Assertions.assertThrows(
+                    DriscollException::class.java) { androService.deleteUser(userIdBad) }
+
+            //Assert successful test
+            assertEquals(expectedResponse.status, actualResponse.status)
+            assertEquals(expectedResponse.message, actualResponse.message)
+        }
     }
 }
 

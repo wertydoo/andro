@@ -21,14 +21,14 @@ class AndroService(val androRepo: AndroRepo) {
     @Throws(DriscollException::class)
     fun getUser(userId: Long): User {
         //TODO Specify userId format so we can throw errors for incorrect format and standardize our id system
-        return androRepo.findByIdOrNull(userId)
+        return androRepo.findById(userId).orElse(null)
                 ?: throw DriscollException(ExceptionResponses.USER_NOT_FOUND.status, ExceptionResponses.USER_NOT_FOUND.message)
     }
 
     @Throws(DriscollException::class)
     fun updateUser(userId: Long, userUpdate: User) : User{
         //TODO Specify userId format so we can throw errors for incorrect format and standardize our id system
-        val userToUpdate : User = androRepo.findByIdOrNull(userId)
+        val userToUpdate : User = androRepo.findById(userId).orElse(null)
                 ?: throw DriscollException(ExceptionResponses.USER_NOT_FOUND.status, ExceptionResponses.USER_NOT_FOUND.message)
         userToUpdate.updateAll(userUpdate)
         return androRepo.save(userToUpdate)
