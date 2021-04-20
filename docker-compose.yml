@@ -10,3 +10,13 @@ services:
         - CONFIG_PASSWORD=${CONFIG_PASSWORD}
     ports:
       - "8019:8018"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - ENVIRONMENT=local
+      - AUTH_ENABLED=false
+    networks:
+      - defnet
+
+networks:
+  defnet:
+    external: true

@@ -1,7 +1,7 @@
 plugins {
 }
 
-group = "com.thomas-driscoll"
+group = "com.brianwilens"
 version = "0.0.1-SNAPSHOT"
 
 repositories {

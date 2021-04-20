@@ -1,9 +1,9 @@
-server.port : 8019
+server.port : 8018 #8018 for docker 8019 for localw
 
 #localhost setup
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/iliad?currentSchema=andro
+    url: jdbc:postgresql://db:5432/iliad?currentSchema=andro # db:5432 for docker - localhost:5433 for local
     username: developer
     password: testing
     driver-class-name: org.postgresql.Driver
